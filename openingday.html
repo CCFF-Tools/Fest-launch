@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CCFF Opening Night</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #ffffff;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            border: 10px dashed red;
+            border-radius: 20px;
+            box-shadow: 0 0 20px 5px #ff0000;
+            max-width: 90%;
+            width: 100%;
+            position: relative;
+        }
+
+        .title {
+            font-size: 2.5em;
+            color: black;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .countdown {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: red;
+            margin-bottom: 20px;
+        }
+
+        .panic-meter-container {
+            width: 50px;
+            height: 300px;
+            border: 3px solid black;
+            position: relative;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .panic-meter {
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            background: red;
+            transition: height 1s linear;
+        }
+
+        .panic-label {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">CCFF Opening Night</h1>
+        <div class="countdown" id="countdown">Calculating...</div>
+        <div class="panic-meter-container">
+            <div class="panic-meter" id="panicMeter" style="height: 0%;"></div>
+        </div>
+        <div class="panic-label">Panic Meter</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const startTime = new Date('2025-02-01T00:00:00Z').getTime(); // Feb 1, 2025, UTC
+            const endTime = new Date('2025-04-02T22:00:00Z').getTime(); // 6:00 PM Eastern (UTC-4)
+            const panicMeter = document.getElementById('panicMeter');
+            const countdownElement = document.getElementById('countdown');
+
+            function updateTimer() {
+                const currentTime = new Date().getTime();
+                const timeRemaining = endTime - currentTime;
+
+                if (timeRemaining <= 0) {
+                    countdownElement.innerText = "00 Days 00:00:00";
+                    panicMeter.style.height = "100%";
+                    clearInterval(timerInterval);
+                    return;
+                }
+
+                const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+                countdownElement.innerText = `${String(days).padStart(2, '0')} Days ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                
+                const totalDuration = endTime - startTime;
+                const elapsedTime = currentTime - startTime;
+                const progress = Math.min((elapsedTime / totalDuration) * 100, 100);
+                panicMeter.style.height = `${progress}%`;
+            }
+
+            const timerInterval = setInterval(updateTimer, 1000);
+            updateTimer();
+        });
+    </script>
+</body>
+</html>
